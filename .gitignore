@@ -12,3 +12,6 @@ htmlcov/
 report.json
 report.csv
 report.md
+
+# Local tooling (not tracked)
+commit.sh
