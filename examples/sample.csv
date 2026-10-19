@@ -1,0 +1,13 @@
+id,snapshot,segment,text,author
+r001,original,news,"City council approves the new transit plan after a long debate.",a.reyes
+r002,original,news,"Local startup raises a seed round to expand its logistics platform.",j.mills
+r003,original,news,"Weekend storm warning issued for the coastal counties.",k.osei
+r004,original,blog,"Ten lessons from migrating a monolith to services.",d.park
+r005,original,blog,"A short field guide to writing readable commit messages.",s.novak
+r006,original,blog,"Why we moved our analytics off the spreadsheet.",m.chen
+r001,fresh,news,"City council approves the new transit plan after a long debate.",a.reyes
+r002,fresh,news,"Local startup raises a seed round to expand its logistics platform.",j.miller
+r003,fresh,news,"Weekend storm warning issued for the coastal counties.",k.osei
+r005,fresh,blog,"A short field guide to writing readable commit messages.",s.novak
+r006,fresh,blog,"Why we moved our analytics off the spreadsheet.",m.chen
+r007,fresh,news,"New ferry route opens between the two harbour districts.",t.ibrahim
