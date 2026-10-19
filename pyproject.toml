@@ -36,3 +36,25 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "PIE", "RUF"]
+# RUF001: intentional non-Latin glyphs in language tables, detection tests, and
+# mojibake-handling fixtures.
+ignore = ["RUF001"]
+
+[tool.ruff.lint.per-file-ignores]
+# E402: a couple of tests adjust sys.path before importing the package.
+"tests/**" = ["E402"]
+
+
+[tool.pyright]
+include = ["src"]
+extraPaths = ["src"]
+pythonVersion = "3.10"
+typeCheckingMode = "basic"
