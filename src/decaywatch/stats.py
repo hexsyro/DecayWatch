@@ -157,6 +157,24 @@ def chi_square_contingency(table: list[list[float]]) -> tuple[float, int]:
     return stat, (rows - 1) * (cols - 1)
 
 
+def min_expected_count(table: Sequence[Sequence[float]]) -> float:
+    """Smallest expected cell count in a contingency table (0 for degenerate tables).
+
+    Chi-square approximations need expected counts of at least 5 in every cell;
+    callers should skip the test when this returns less.
+    """
+    if not table or not table[0]:
+        return 0.0
+    total = sum(sum(row) for row in table)
+    if total <= 0:
+        return 0.0
+    col_sums = [sum(row[c] for row in table) for c in range(len(table[0]))]
+    expected = [
+        sum(row) * col_sums[c] / total for row in table for c in range(len(row))
+    ]
+    return min(expected) if expected else 0.0
+
+
 def ks_statistic(a: Sequence[float], b: Sequence[float]) -> float:
     """Two-sample Kolmogorov-Smirnov statistic (max CDF gap, in [0, 1])."""
     if not a or not b:
@@ -203,8 +221,18 @@ def luhn_valid(digits: str) -> bool:
 
 
 # ---------------------------------------------------------------------------
-# String similarity
+# String similarity / content hashing
 # ---------------------------------------------------------------------------
+
+def normalized_text_hash(text: str) -> str:
+    """Stable sha256 of text after whitespace normalization.
+
+    Used for content-drift checks: formatting differences should not count as
+    drift, but a rewritten body should.
+    """
+    normalized = " ".join(str(text).split())
+    return hashlib.sha256(normalized.encode("utf-8")).hexdigest()
+
 
 def levenshtein(a: str, b: str, max_dist: int | None = None) -> int:
     """Edit distance with optional early exit above max_dist."""

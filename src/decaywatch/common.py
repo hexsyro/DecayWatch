@@ -19,6 +19,7 @@ from pathlib import Path
 from typing import Any
 
 SEVERITY_RANK = {"low": 1, "medium": 2, "high": 3}
+RESULT_SCHEMA_VERSION = "1.1"
 
 
 @dataclass
@@ -27,6 +28,12 @@ class ToolResult:
     findings: list[dict] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
     summary: dict[str, Any] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        """Stamp every result with the shared result-contract fields."""
+        self.summary.setdefault("result_schema_version", RESULT_SCHEMA_VERSION)
+        self.summary.setdefault("skipped", False)
+        self.summary.setdefault("skip_reason", None)
 
 
 # ---------------------------------------------------------------------------
@@ -195,6 +202,18 @@ def opt_int(options: dict, key: str, default: int) -> int:
         return int(options.get(key, default))
     except (TypeError, ValueError):
         return default
+
+
+def opt_str(options: dict, key: str, default: str = "") -> str:
+    """String option that never raises, even for malformed config values."""
+    value = options.get(key)
+    if value is None:
+        return default
+    if isinstance(value, str):
+        return value
+    if isinstance(value, (bool, int, float)):
+        return str(value)
+    return default
 
 
 def opt_list(value: Any) -> list[str]:

@@ -48,11 +48,54 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--snapshot-column", metavar="COL", help="column marking original vs fresh rows")
     parser.add_argument("--status-column", metavar="COL", help="column marking present vs removed rows")
     parser.add_argument("--segment-column", metavar="COL", help="column to break survival down by")
+    parser.add_argument("--date-column", metavar="COL", help="column with per-row snapshot dates (survival curve)")
+    parser.add_argument("--content-column", metavar="COL", help="text column to compare for content drift")
+    parser.add_argument("--source-type-column", metavar="COL", help="column with source types for risk stratification")
+    parser.add_argument("--text-column", metavar="COL", help="text column used in the representativity check")
+    parser.add_argument(
+        "--drift-columns",
+        metavar="COL",
+        nargs="+",
+        help="only compare these fields for metadata drift",
+    )
     parser.add_argument("--original-value", metavar="VAL", help="snapshot value that marks the original set")
     parser.add_argument("--fresh-value", metavar="VAL", help="snapshot value that marks the fresh re-collection")
     parser.add_argument("--max-examples", type=int, metavar="N", help="cap on purge-list examples in findings")
     parser.add_argument("--version", action="version", version=f"{TOOL} {__version__}")
     return parser
+
+
+_STRING_OPTIONS = (
+    "mode", "id_column", "snapshot_column", "status_column", "segment_column",
+    "date_column", "content_column", "source_type_column", "text_column",
+    "original_value", "fresh_value",
+)
+_INT_OPTIONS = ("max_examples",)
+_LIST_OPTIONS = ("present_values", "drift_columns")
+
+
+def _validate_options(options: dict[str, Any], source: str) -> None:
+    """Reject wrong option types early so the CLI can exit 2 with a clear message."""
+    for key in _STRING_OPTIONS:
+        if key in options and not isinstance(options[key], str):
+            raise ValueError(
+                f"{source}: option '{key}' must be a string, got {type(options[key]).__name__}"
+            )
+    for key in _INT_OPTIONS:
+        if key in options and (isinstance(options[key], bool) or not isinstance(options[key], int)):
+            raise ValueError(
+                f"{source}: option '{key}' must be an integer, got {type(options[key]).__name__}"
+            )
+    for key in _LIST_OPTIONS:
+        value = options.get(key)
+        if value is None:
+            continue
+        if isinstance(value, str):
+            continue
+        if not isinstance(value, (list, tuple)) or any(not isinstance(item, str) for item in value):
+            raise ValueError(
+                f"{source}: option '{key}' must be a string or a list of strings"
+            )
 
 
 def _merge_options(args: argparse.Namespace) -> dict[str, Any]:
@@ -61,6 +104,7 @@ def _merge_options(args: argparse.Namespace) -> dict[str, Any]:
         parsed = json.loads(Path(args.config).read_text(encoding="utf-8"))
         if not isinstance(parsed, dict):
             raise ValueError(f"{args.config}: config must be a JSON object")
+        _validate_options(parsed, args.config)
         options.update(parsed)
     for flag, key in (
         ("mode", "mode"),
@@ -68,6 +112,11 @@ def _merge_options(args: argparse.Namespace) -> dict[str, Any]:
         ("snapshot_column", "snapshot_column"),
         ("status_column", "status_column"),
         ("segment_column", "segment_column"),
+        ("date_column", "date_column"),
+        ("content_column", "content_column"),
+        ("source_type_column", "source_type_column"),
+        ("text_column", "text_column"),
+        ("drift_columns", "drift_columns"),
         ("original_value", "original_value"),
         ("fresh_value", "fresh_value"),
         ("max_examples", "max_examples"),
@@ -75,6 +124,7 @@ def _merge_options(args: argparse.Namespace) -> dict[str, Any]:
         value = getattr(args, flag)
         if value is not None:
             options[key] = value
+    _validate_options(options, args.config or "config")
     return options
 
 

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "decaywatch"
-version = "0.1.0"
+version = "0.2.0"
 description = "Measure how much of a collected dataset still exists: snapshot survival, metadata drift, representativity, and a purge list."
 readme = "README.md"
 license = "MIT"
@@ -36,6 +36,7 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["src"]
 
 
 [tool.ruff]
