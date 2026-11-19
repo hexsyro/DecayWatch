@@ -59,3 +59,31 @@ include = ["src"]
 extraPaths = ["src"]
 pythonVersion = "3.10"
 typeCheckingMode = "basic"
+
+
+[tool.pylint.format]
+max-line-length = 120
+
+[tool.pylint."messages control"]
+disable = [
+  "missing-module-docstring",
+  "missing-class-docstring",
+  "missing-function-docstring",
+  "too-many-arguments",
+  "too-many-locals",
+  "too-many-branches",
+  "too-many-statements",
+  "too-many-return-statements",
+  "too-few-public-methods",
+  "duplicate-code",
+  "import-outside-toplevel",
+  "unused-argument",
+  "use-implicit-booleaness-not-comparison",
+  "broad-exception-caught",
+  "protected-access",
+  "too-many-positional-arguments",
+  "too-many-instance-attributes",
+]
+
+[tool.pylint.typecheck]
+ignored-modules = ["pytest"]

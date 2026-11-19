@@ -370,9 +370,8 @@ def lsh_candidate_pairs(signatures: list[list[int]], bands: int, rows: int) -> s
     pairs: set[tuple[int, int]] = set()
     for members in buckets.values():
         if len(members) > 1:
-            for i in range(len(members)):
-                for j in range(i + 1, len(members)):
-                    a, b = members[i], members[j]
+            for i, a in enumerate(members):
+                for b in members[i + 1 :]:
                     pairs.add((a, b) if a < b else (b, a))
     return pairs
 
