@@ -66,9 +66,17 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 _STRING_OPTIONS = (
-    "mode", "id_column", "snapshot_column", "status_column", "segment_column",
-    "date_column", "content_column", "source_type_column", "text_column",
-    "original_value", "fresh_value",
+    "mode",
+    "id_column",
+    "snapshot_column",
+    "status_column",
+    "segment_column",
+    "date_column",
+    "content_column",
+    "source_type_column",
+    "text_column",
+    "original_value",
+    "fresh_value",
 )
 _INT_OPTIONS = ("max_examples",)
 _LIST_OPTIONS = ("present_values", "drift_columns")
@@ -78,14 +86,10 @@ def _validate_options(options: dict[str, Any], source: str) -> None:
     """Reject wrong option types early so the CLI can exit 2 with a clear message."""
     for key in _STRING_OPTIONS:
         if key in options and not isinstance(options[key], str):
-            raise ValueError(
-                f"{source}: option '{key}' must be a string, got {type(options[key]).__name__}"
-            )
+            raise ValueError(f"{source}: option '{key}' must be a string, got {type(options[key]).__name__}")
     for key in _INT_OPTIONS:
         if key in options and (isinstance(options[key], bool) or not isinstance(options[key], int)):
-            raise ValueError(
-                f"{source}: option '{key}' must be an integer, got {type(options[key]).__name__}"
-            )
+            raise ValueError(f"{source}: option '{key}' must be an integer, got {type(options[key]).__name__}")
     for key in _LIST_OPTIONS:
         value = options.get(key)
         if value is None:
@@ -93,9 +97,7 @@ def _validate_options(options: dict[str, Any], source: str) -> None:
         if isinstance(value, str):
             continue
         if not isinstance(value, (list, tuple)) or any(not isinstance(item, str) for item in value):
-            raise ValueError(
-                f"{source}: option '{key}' must be a string or a list of strings"
-            )
+            raise ValueError(f"{source}: option '{key}' must be a string or a list of strings")
 
 
 def _merge_options(args: argparse.Namespace) -> dict[str, Any]:

@@ -26,8 +26,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e ".[dev]" ruff pyright
 
-      - name: Ruff
+      - name: Ruff lint
         run: ruff check src tests
+
+      - name: Ruff format
+        run: ruff format --check src tests
 
       - name: Pyright
         run: pyright src

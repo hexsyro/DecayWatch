@@ -17,6 +17,7 @@ from typing import Any
 # Descriptive statistics
 # ---------------------------------------------------------------------------
 
+
 def mean(values: list[float]) -> float | None:
     return sum(values) / len(values) if values else None
 
@@ -69,6 +70,7 @@ def modified_zscores(values: list[float]) -> list[float]:
 # ---------------------------------------------------------------------------
 # Proportions and contingency tables
 # ---------------------------------------------------------------------------
+
 
 def wilson_interval(successes: int, n: int, z: float = 1.96) -> tuple[float, float]:
     """Wilson score 95% interval for a binomial proportion.
@@ -169,9 +171,7 @@ def min_expected_count(table: Sequence[Sequence[float]]) -> float:
     if total <= 0:
         return 0.0
     col_sums = [sum(row[c] for row in table) for c in range(len(table[0]))]
-    expected = [
-        sum(row) * col_sums[c] / total for row in table for c in range(len(row))
-    ]
+    expected = [sum(row) * col_sums[c] / total for row in table for c in range(len(row))]
     return min(expected) if expected else 0.0
 
 
@@ -192,6 +192,7 @@ def ks_statistic(a: Sequence[float], b: Sequence[float]) -> float:
 # ---------------------------------------------------------------------------
 # Information theory / validation
 # ---------------------------------------------------------------------------
+
 
 def shannon_entropy(text: str) -> float:
     """Bits of entropy per character. English prose is about 4.0-4.7; random text 5+."""
@@ -223,6 +224,7 @@ def luhn_valid(digits: str) -> bool:
 # ---------------------------------------------------------------------------
 # String similarity / content hashing
 # ---------------------------------------------------------------------------
+
 
 def normalized_text_hash(text: str) -> str:
     """Stable sha256 of text after whitespace normalization.
@@ -303,6 +305,7 @@ def jaro_winkler(a: str, b: str) -> float:
 # TF-IDF cosine similarity
 # ---------------------------------------------------------------------------
 
+
 class TfIdf:
     """Tiny TF-IDF vector space: sublinear TF, smoothed IDF, cosine scoring."""
 
@@ -336,6 +339,7 @@ class TfIdf:
 # MinHash LSH (near-duplicate search at scale)
 # ---------------------------------------------------------------------------
 
+
 def _minhash_seed(seed: int, shingle: str) -> int:
     digest = hashlib.sha256(f"{seed}:{shingle}".encode()).digest()
     return int.from_bytes(digest[:8], "big")
@@ -356,9 +360,7 @@ def lsh_bands_for_threshold(threshold: float, num_perm: int = 64) -> tuple[int, 
     return bands, rows
 
 
-def lsh_candidate_pairs(
-    signatures: list[list[int]], bands: int, rows: int
-) -> set[tuple[int, int]]:
+def lsh_candidate_pairs(signatures: list[list[int]], bands: int, rows: int) -> set[tuple[int, int]]:
     """Band-and-row LSH: index pairs sharing any identical band."""
     buckets: dict[tuple[int, tuple[int, ...]], list[int]] = {}
     for idx, sig in enumerate(signatures):
@@ -378,6 +380,7 @@ def lsh_candidate_pairs(
 # ---------------------------------------------------------------------------
 # SimHash (coordinated-duplicate detection)
 # ---------------------------------------------------------------------------
+
 
 def simhash_fingerprint(tokens: list[str]) -> int:
     """64-bit SimHash: near-duplicate texts land within a small Hamming ball."""
@@ -400,6 +403,7 @@ def hamming(a: int, b: int) -> int:
 # ---------------------------------------------------------------------------
 # Changepoint detection (CUSUM + binary segmentation)
 # ---------------------------------------------------------------------------
+
 
 def cusum_changepoint(values: list[float]) -> tuple[int, float]:
     """Page's two-sided CUSUM: returns (split index, normalized magnitude).
@@ -426,9 +430,7 @@ def cusum_changepoint(values: list[float]) -> tuple[int, float]:
     return loc, shift
 
 
-def binary_segmentation(
-    values: list[float], min_size: int = 5, min_shift: float = 1.0
-) -> list[int]:
+def binary_segmentation(values: list[float], min_size: int = 5, min_shift: float = 1.0) -> list[int]:
     """Recursively split a series at CUSUM changepoints (needs n >= 2*min_size)."""
     points: list[int] = []
 

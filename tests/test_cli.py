@@ -47,13 +47,7 @@ def test_csv_output(tmp_path, capsys):
 
 
 def test_segment_flag(tmp_path, capsys):
-    content = (
-        "id,snapshot,segment\n"
-        "r1,original,news\n"
-        "r2,original,blog\n"
-        "r1,fresh,news\n"
-        "r2,fresh,blog\n"
-    )
+    content = "id,snapshot,segment\nr1,original,news\nr2,original,blog\nr1,fresh,news\nr2,fresh,blog\n"
     p = write_csv(tmp_path, content)
     assert main([str(p), "--segment-column", "segment", "--format", "json"]) == 0
     payload = json.loads(capsys.readouterr().out)
@@ -82,6 +76,7 @@ def test_version(capsys):
 
 
 # --- 0.2.0 CLI behavior ----------------------------------------------------
+
 
 def _write_config(tmp_path, options):
     cfg = tmp_path / "config.json"
@@ -128,10 +123,17 @@ def test_new_options_via_cli_flags_and_config(tmp_path, capsys):
     p = write_csv(tmp_path, content)
     cfg = _write_config(tmp_path, {"text_column": "body", "drift_columns": ["author"]})
     args = [
-        str(p), "--format", "json", "--config", str(cfg),
-        "--date-column", "captured_at",
-        "--content-column", "body",
-        "--source-type-column", "source_type",
+        str(p),
+        "--format",
+        "json",
+        "--config",
+        str(cfg),
+        "--date-column",
+        "captured_at",
+        "--content-column",
+        "body",
+        "--source-type-column",
+        "source_type",
     ]
     assert main(args) == 0
     summary = json.loads(capsys.readouterr().out)["summary"]

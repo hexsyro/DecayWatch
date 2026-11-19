@@ -187,6 +187,7 @@ def test_run_returns_toolresult():
 
 # --- 0.2.0 shared result contract -----------------------------------------
 
+
 def test_shared_schema_fields_and_exports():
     assert __version__ == "0.2.0"
     assert RESULT_SCHEMA_VERSION == "1.1"
@@ -215,6 +216,7 @@ def test_skipped_runs_keep_success_status(rows, options, reason):
 
 
 # --- Fixed behaviors -------------------------------------------------------
+
 
 def test_purge_overflow_points_to_purge_ids():
     rows = [snap(f"r{i}", "original") for i in range(7)] + [snap("r0", "fresh")]
@@ -280,6 +282,7 @@ def test_representativity_auto_select_warns():
 
 
 # --- New features ----------------------------------------------------------
+
 
 def test_survival_curve_and_decay_metrics():
     rows = [

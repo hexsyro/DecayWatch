@@ -68,8 +68,7 @@ def _markdown(result: ToolResult, tool: str, version: str) -> str:
         f"# {tool} report",
         "",
         f"**Version:** {version} — **Status:** {result.status} — "
-        f"**Findings:** {len(result.findings)}"
-        + (f" — **Rows checked:** {checked}" if checked is not None else ""),
+        f"**Findings:** {len(result.findings)}" + (f" — **Rows checked:** {checked}" if checked is not None else ""),
         "",
     ]
     if result.findings:
